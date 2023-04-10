@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BOARD_ROWS 25
-#define BOARD_COLS 32
+#define BOARD_ROWS 10
+#define BOARD_COLS 17
 
 enum color {
     DEFAULT = 0,

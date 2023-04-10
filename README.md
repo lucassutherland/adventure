@@ -1,3 +1,5 @@
+![image info](./images/very-excited-for-perlin.png)
+
 ## Adventure!
 This is a little project I've started April 2023.
 It's a 'game' that's more going to be a bit of a tech demo - I want to try applying some of the data structures & algorithms I've learnt
