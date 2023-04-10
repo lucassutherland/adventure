@@ -10,6 +10,6 @@ It's a 'game' that's more going to be a bit of a tech demo - I want to try apply
 - [x] get it to draw out the map in terminal (with fancy ANSI color stuff)
 - [ ] get some actually nice terrain going w perlin noise
 - [ ] create quests, inventory, location events
-- [ ] create unfriendlies, and create pathfinding for them
+- [ ] create unfriendlies and pathfinding
 - [ ] move the graphics to SplashKit bc printf
 - [ ] success :)
