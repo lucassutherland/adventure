@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
-#include "graphics.h"
+#include "noise.h"
 #include "game.h"
+#include "graphics.h"
 
 void generate_terrain(struct tile board[BOARD_ROWS][BOARD_COLS]);
-void tile_terrain_decision(int row, int col, 
-    struct tile board[BOARD_ROWS][BOARD_COLS]);
 void generate_entities(struct tile board[BOARD_ROWS][BOARD_COLS]);
 bool in_board(int row, int col);
 
@@ -15,23 +15,15 @@ int main(void) {
 
     struct tile board[BOARD_ROWS][BOARD_COLS];
 
-    printf("Generating terrain...   ");
     generate_terrain(board);
-    printf("Terrain generated!\n");
 
-    printf("Generating entities...  ");
     generate_entities(board);
-    printf("Entities generated!\n");
-
-    printf("Printing board...\n\n");
-    printf("\033[1;1H\033[2J");
-    print_board(board);
 
     char move;
     int player_row = 3;
     int player_col = 3;
     board[player_row][player_col].entity = PLAYER;
-    printf("\033[1;1H\033[2J");
+    clear_screen();
     print_board(board);
     
     while ((move = getchar()) != EOF) {
@@ -64,25 +56,48 @@ void generate_entities(struct tile board[BOARD_ROWS][BOARD_COLS]) {
 }
 
 void generate_terrain(struct tile board[BOARD_ROWS][BOARD_COLS]) {
+    double noise[BOARD_ROWS][BOARD_COLS] = {0};
+
+    for(int i = 0; i < BOARD_ROWS; i++) {
+        for(int j = 0; j < BOARD_COLS; j++) {
+            noise[i][j] = 1;
+        }
+    }
+
+    int seed;
+    // printf("enter seed number: ");
+    // scanf(" %d", &seed);
+    time_t t;
+    srand((unsigned) time(&t));
+
+    int frequencies[10] = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
+    int amplitudes[10] = {10, 20, 10, 20, 10, 20, 10, 20, 10, 20};
+
+    for(int i = 0; i < 10; i++) {
+        add_octave(BOARD_ROWS, BOARD_COLS, noise, 
+                rand() % BOARD_COLS, 
+                rand() % BOARD_ROWS,
+                (BOARD_COLS + BOARD_ROWS) / 2 / frequencies[i], amplitudes[i]);
+    }
+    
+
+
+    
     for(int row = 0; row < BOARD_ROWS; row++) {
         for(int col = 0; col < BOARD_COLS; col++) {
             
-            int r = (rand() + 1) % 6; // - seed, % num terrain types
-            if (r == 0) board[row][col].terrain = GRASS;
-            if (r == 1) board[row][col].terrain = FOREST;
-            if (r == 2) board[row][col].terrain = SAND;
-            if (r == 3) board[row][col].terrain = WATER;
-            if (r == 4) board[row][col].terrain = MOUNTAIN;
-            if (r == 5) board[row][col].terrain = OCEAN;
+            enum terrain terrain;
+            if (noise[row][col] > 95) terrain = MOUNTAIN;
+            else if (noise[row][col] > 80) terrain = FOREST;
+            else if (noise[row][col] > 70) terrain = GRASS;
+            else if (noise[row][col] > 50) terrain = SAND;
+            else if (noise[row][col] > 25) terrain = WATER;
+            else if (noise[row][col] > -1) terrain = OCEAN; // -1 for double leniency
+            else terrain = VOID;
 
-
+            board[row][col].terrain = terrain;
         }
     }
-}
-
-void tile_terrain_decision(int row, int col, 
-                            struct tile board[BOARD_ROWS][BOARD_COLS]) {
-
 }
 
 bool in_board(int row, int col) {

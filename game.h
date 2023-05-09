@@ -1,8 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
-#define BOARD_ROWS 20
-#define BOARD_COLS 35
+#define BOARD_ROWS 30
+#define BOARD_COLS 50
 
 // includes color mapping
 enum terrain {
